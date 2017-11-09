@@ -37,7 +37,6 @@ class RuleEventClient(threading.Thread):
         print("Client Initiated pid={}".format(os.getpid()))
 
     def receive_event(self):
-        log_file = open("pull.log", "w")
         pid = os.getpid()
         while True:
             polls = dict(self.poller.poll(1000))
