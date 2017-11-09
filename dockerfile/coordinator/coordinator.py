@@ -79,7 +79,7 @@ application = app
 
 
 @app.route("/r/<type_>/<id_>", methods=['GET', "PUT", 'POST', "DELETE"])
-def _register(type_, id_):
+def _resource(type_, id_):
     """
     TODO: Add update / delete
     """
