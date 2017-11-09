@@ -21,8 +21,8 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN pip3 install pyzmq Flask
 
 # Copy Application
-COPY coordinator.py /var/www/app/
-
-COPY coordinator.py /tmp/
+COPY coordinator.py zmq_bridge.py /var/www/app/
+WORKDIR /var/www/app/
+#CMD ["bash", "-c", "service redis-server restart && python3 zmq_bridge.py && /usr/bin/supervisord"]
 CMD ["bash", "-c", "service redis-server restart && /usr/bin/supervisord"]
 #CMD ["bash", "-c", "service redis-server restart && python3 coordinator.py >& log"]

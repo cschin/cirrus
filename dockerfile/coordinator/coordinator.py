@@ -9,17 +9,17 @@ REDIS_HOST = "127.0.0.1"
 REDIS_PORT = 6379
 
 ZMQ_HOST = "0.0.0.0"
-ZMQ_PORT = "7777"
+ZMQ_PORT = "7776"
 
-ctx = zmq.Context()
-zmq_socket = ctx.socket(zmq.PUSH)
-zmq_push_url = 'tcp://{}:{}'.format(ZMQ_HOST, ZMQ_PORT)
 
 
 def send_message(message):
+    ctx = zmq.Context()
+    zmq_socket = ctx.socket(zmq.PUSH)
+    zmq_push_url = 'tcp://{}:{}'.format(ZMQ_HOST, ZMQ_PORT)
     s_count = 0
     rtn = False
-    zmq_socket.bind(zmq_push_url)
+    zmq_socket.connect(zmq_push_url)
     while 1:
         s_count += 1
         if s_count >= 10:
@@ -30,7 +30,6 @@ def send_message(message):
             break
         except zmq.error.Again:
             time.sleep(0.1)
-    zmq_socket.unbind(zmq_push_url)
 
     return rtn
 
