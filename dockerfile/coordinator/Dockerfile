@@ -10,19 +10,16 @@ RUN ln -s /etc/nginx/sites-available/flask.conf /etc/nginx/sites-enabled/flask.c
 COPY uwsgi.ini /var/www/app/
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-# install uwsgi
-RUN pip3 install uwsgi
+# install uwsgi pyzmq Flask 
+RUN pip3 install uwsgi pyzmq Flask
 
 # Setup Supervisor
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-
-RUN pip3 install pyzmq Flask
-
 # Copy Application
 COPY coordinator.py zmq_bridge.py /var/www/app/
 WORKDIR /var/www/app/
 #CMD ["bash", "-c", "service redis-server restart && python3 zmq_bridge.py && /usr/bin/supervisord"]
-CMD ["bash", "-c", "service redis-server restart && /usr/bin/supervisord"]
+CMD ["bash", "-c", "service redis-server start && /usr/bin/supervisord"]
 #CMD ["bash", "-c", "service redis-server restart && python3 coordinator.py >& log"]
