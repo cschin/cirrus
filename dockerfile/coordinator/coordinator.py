@@ -33,7 +33,7 @@ def send_message(message):
     return rtn
 
 
-def get_trigger_rules(triggering_event, force="false"):
+def get_triggered_rules(triggering_event, force="false"):
     r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
     event_queue = r.lrange("queue:event".encode("utf-8"), 0, -1)
     events_in_queue = set()
@@ -118,7 +118,7 @@ def _resource(type_, id_):
             key = "queue:{}".format(type_).encode("utf-8")
             msg = json.dumps({"payload": {id_: req}, "ts": ts})
             r.rpush(key, msg)
-            triggered_rules = get_trigger_rules(id_, force=force)
+            triggered_rules = get_triggered_rules(id_, force=force)
             msgs = []
             for rule in triggered_rules:
                 rule_id = list(rule.keys())[0]
