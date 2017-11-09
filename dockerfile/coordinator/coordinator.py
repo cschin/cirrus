@@ -12,7 +12,6 @@ ZMQ_HOST = "0.0.0.0"
 ZMQ_PORT = "7776"
 
 
-
 def send_message(message):
     ctx = zmq.Context()
     zmq_socket = ctx.socket(zmq.PUSH)
@@ -43,8 +42,7 @@ def get_trigger_rules(triggering_event, force="false"):
         e = json.loads(e.decode("utf-8"))
         events_in_queue.update(e["payload"].keys())
 
-
-    #  if force is False, we won't trigger rules if an event have
+    # if `force` is False, we won't trigger rules if an event have
     # already happend before
     if triggering_event in events_in_queue and force == "false":
         return []
@@ -67,11 +65,11 @@ def get_trigger_rules(triggering_event, force="false"):
     for rl in r.scan_iter("rule:*".encode("utf-8")):
         v = r.get(rl)
         d = json.loads(v.decode("utf-8"))
-        _1, _2, rule_name = rl.decode("utf-8").partition(":")
+        _1, _2, rule_id = rl.decode("utf-8").partition(":")
         rule_data = d["payload"]
         for es in triggering_event_set:
             if es in rule_data:
-                triggered_rules.append({rule_name: rule_data})
+                triggered_rules.append({rule_id: rule_data})
 
     return triggered_rules
 
@@ -123,21 +121,36 @@ def _register(type_, id_):
             triggered_rules = get_trigger_rules(id_, force=force)
             msgs = []
             for rule in triggered_rules:
-                rule_name = list(rule.keys())[0]
+                rule_id = list(rule.keys())[0]
 
-                r_key = "queue:rule_dispatch".encode("utf-8")
-                r.rpush(r_key, json.dumps({"payload":rule, "ts":ts}))
+                r_key = "queue:rule_state".encode("utf-8")
+                r.rpush(r_key, json.dumps({"payload": {
+                                              rule_id: {
+                                                "state": "triggered",
+                                                "ts": ts}}}))
 
-                is_msg_sent = send_message(json.dumps({"rule":rule,
-                                                       "force":force}))
+                is_msg_sent = send_message(json.dumps({"rule": rule,
+                                                       "force": force}))
                 sent_status = "OK" if is_msg_sent else "FAIL"
-                msgs.append({"msg": "trigged by {} and push rule {}".
-                             format(id_, rule_name),
-                             "sent_status": sent_status})
+                msgs.append({"msg": "rule '{}' trigged by '{}'".
+                                    format(rule_id, id_),
+                             "zmq_push_status": sent_status})
             msg = json.dumps({"msg": msgs,
                               "status": "OK"})
             return msg
-        msg = json.dumps({"msg": "wrong trigger action",
+        elif action == "dispatch" and type_ == "rule":
+            rule_id = id_
+            ts = time.time()
+            r_key = "queue:rule_state".format(type_).encode("utf-8")
+            r.rpush(r_key, json.dumps({"payload": {
+                                          rule_id: {
+                                            "state": "dispatched",
+                                            "ts": ts}}}))
+            msg = json.dumps({"msg": "rule '{}' state 'dispatched' recorded".
+                                     format(id_),
+                              "status": "OK"})
+
+        msg = json.dumps({"msg": "wrong action",
                           "status": "FAIL"})
         return msg
 

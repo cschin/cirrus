@@ -45,7 +45,9 @@ class RuleEventClient(threading.Thread):
                 continue
             message = self.pull.recv_string()
             message = json.loads(message)
-            rule_name, rule = list(message["rule"].items())[0]  # only one object
+            rule_id, rule = list(message["rule"].items())[0]  # only one object
+            r = requests.post("http://coordinator/r/rule/{}".format(rule_id),
+                              json={"action":"dispatch"})
             force = message["force"]
             for trigger_event_set, payload in rule.items():
                 # print(pid, trigger_event_set, file=sys.stderr)
