@@ -10,7 +10,7 @@ events = {"ns:event:1":{},
           "ns:event:5":{}}
 
 event_set = { e:[e] for e in events }
-event_set["ns:eventset:1"] = ["ns:event:1", "ns:event:4"]
+event_set["ns:event_set:1"] = ["ns:event:1", "ns:event:4"]
 
 rules = {"ns:rule:1": {
             "ns:event:1": {
@@ -28,7 +28,7 @@ rules = {"ns:rule:1": {
               "triggering": "ns:event:4",
               "attempts": 1 }},
         "ns:rule:4": {
-            "ns:eventset:1": {
+            "ns:event_set:1": {
               "activity": {"cmd":"__auto_trigger__"},
               "triggering": "ns:event:5",
               "attempts": 1 }}
