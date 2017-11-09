@@ -78,6 +78,7 @@ def get_trigger_rules(triggering_event, force="false"):
 
 
 app = Flask(__name__)
+application = app
 
 
 @app.route("/r/<type_>/<id_>", methods=['GET', "PUT", 'POST', "DELETE"])
@@ -170,4 +171,5 @@ def _queue(type_):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=7000, debug=False)
+    #app.run(host='0.0.0.0', port=7000, debug=False)
+    application.run()

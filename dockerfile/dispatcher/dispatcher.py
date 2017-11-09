@@ -56,10 +56,10 @@ class RuleEventClient(threading.Thread):
                 # print(pid, "next:", next_event_set, file=sys.stderr)
 
                 if cmd == "__auto_trigger__":
-                    r = requests.get("http://coordinator:7000/r/event_set/{}".format(next_event_set))
+                    r = requests.get("http://coordinator/r/event_set/{}".format(next_event_set))
                     next_events = r.json()["payload"]
                     for e in next_events:
-                        r = requests.post("http://coordinator:7000/r/event/{}".format(e),
+                        r = requests.post("http://coordinator/r/event/{}".format(e),
                                           json={"action":"trigger", "force":force})
 
 

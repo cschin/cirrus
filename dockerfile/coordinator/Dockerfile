@@ -1,14 +1,28 @@
 FROM ubuntu
-RUN apt-get update -qq && \
-apt-get install -qqy tar gzip curl jq  && \
-apt-get install -qqy software-properties-common apt-transport-https ca-certificates && \
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-DEBIAN_FRONTEND=noninteractive add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" && \
-apt-get update -qq && \
-apt-cache policy docker-ce && \
-apt-get install -qqy docker-ce=17.09.0~ce-0~ubuntu 
-RUN apt-get install -qqy python3 python3-pip python3-redis redis-server vim
-RUN pip3 install pyzmq docker Flask
+RUN apt-get update  && \
+apt-get install -y tar gzip curl jq  && \
+apt-get install -y python3 python3-pip python3-redis redis-server vim-tiny nginx supervisor uwsgi
+
+# Setup Nginx
+RUN rm /etc/nginx/sites-enabled/default
+COPY flask.conf /etc/nginx/sites-available/
+RUN ln -s /etc/nginx/sites-available/flask.conf /etc/nginx/sites-enabled/flask.conf
+COPY uwsgi.ini /var/www/app/
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+
+# install uwsgi
+RUN pip3 install uwsgi
+
+# Setup Supervisor
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+
+RUN pip3 install pyzmq Flask
+
+# Copy Application
+COPY coordinator.py /var/www/app/
+
 COPY coordinator.py /tmp/
-WORKDIR /tmp
-CMD ["bash", "-c", "service redis-server restart && python3 coordinator.py"]
+CMD ["bash", "-c", "service redis-server restart && /usr/bin/supervisord"]
+#CMD ["bash", "-c", "service redis-server restart && python3 coordinator.py >& log"]
