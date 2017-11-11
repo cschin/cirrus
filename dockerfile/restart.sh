@@ -8,4 +8,4 @@ docker build -t dispatcher dispatcher/
 
 docker run --hostname coordinator --name coordinator --rm -p 7000:80 -t coordinator &
 sleep 1
-docker run --hostname dispatcher --name dispatcher --link coordinator  --rm  -t dispatcher &
+docker run --hostname dispatcher --name dispatcher --link coordinator -v /var/run/docker.sock:/var/run/docker.sock  --rm  -t dispatcher &
