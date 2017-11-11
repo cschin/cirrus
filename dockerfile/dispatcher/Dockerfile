@@ -7,8 +7,9 @@ DEBIAN_FRONTEND=noninteractive add-apt-repository "deb [arch=amd64] https://down
 apt-get update -qq && \
 apt-cache policy docker-ce && \
 apt-get install -qqy docker-ce=17.09.0~ce-0~ubuntu 
-RUN apt-get install -qqy python3 python3-pip python3-redis redis-server vim
+RUN apt-get install -qqy python3 python3-pip python3-redis redis-server vim supervisor
 RUN pip3 install pyzmq docker Flask
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY dispatcher.py /tmp/
-WORKDIR /tmp
-CMD ["bash", "-c", "python3 dispatcher.py"]
+CMD ["/usr/bin/supervisord"]
