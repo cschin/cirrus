@@ -14,30 +14,30 @@ event_set["ns:event_set:1"] = ["ns:event:1", "ns:event:4"]
 
 rules = {"ns:rule:1": {
             "ns:event:1": {
-              "activity": {"cmd": 'sh -c "ifconfig | grep -A 1 eth0"',
+              "activity": {"cmd": '',
                            "task_type": "docker",
-                           "image": "busybox"},
+                           "image": "worker"},
               "triggering": "ns:event:2",
               "attempts": 1 }},
         "ns:rule:2": {
             "ns:event:2": {
-              "activity": {"cmd": 'bash -c "sleep 1 && echo $TRIGGER && echo $RULE"',
+              "activity": {"cmd": '',
                            "task_type": "docker",
-                           "image": "ubuntu"},
+                           "image": "worker"},
               "triggering": "ns:event:3",
               "attempts": 1 }},
         "ns:rule:3": {
             "ns:event:3": {
-              "activity": {"cmd": 'bash -c "sleep 1 && echo $TRIGGER && echo $RULE"',
+              "activity": {"cmd": '',
                            "task_type": "docker",
-                           "image": "ubuntu"},
+                           "image": "worker"},
               "triggering": "ns:event:4",
               "attempts": 1 }},
         "ns:rule:4": {
             "ns:event_set:1": {
-              "activity": {"cmd": 'bash -c "sleep 1 && echo $TRIGGER && echo $RULE"',
+              "activity": {"cmd": '',
                            "task_type": "docker",
-                           "image": "ubuntu"},
+                           "image": "worker"},
               "triggering": "ns:event:5",
               "attempts": 1 }}
         }

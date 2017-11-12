@@ -6,6 +6,7 @@ docker service rm dispatcher
 docker swarm leave -f
 docker build -t coordinator coordinator/
 docker build -t dispatcher dispatcher/
+docker build -t worker worker-minimum/
 #docker run --hostname coordinator --name coordinator --network host --rm -p 7000:7000 -p 6379:6379 -t coordinator &
 
 
