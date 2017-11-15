@@ -34,6 +34,12 @@ def send_message(message):
 
 
 def get_triggered_rules(triggering_event, force="false"):
+    """
+    Given a newly generated event, go over all event set
+    to see which on is statisfied and then triggering the
+    associated rule. If force is "false" and an event had
+    be triggered before, the the event is ignored.
+    """
     r = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
     event_queue = r.lrange("queue:event".encode("utf-8"), 0, -1)
     events_in_queue = set()
@@ -138,16 +144,16 @@ def _resource(type_, id_):
             msg = json.dumps({"msg": msgs,
                               "status": "OK"})
             return msg
-        elif action == "dispatch" and type_ == "rule":
+        elif action in ("dispatch", "start", "end") and type_ == "rule":
             rule_id = id_
             ts = time.time()
             r_key = "queue:rule_state".format(type_).encode("utf-8")
             r.rpush(r_key, json.dumps({"payload": {
                                           rule_id: {
-                                            "state": "dispatched",
+                                            "state": action,
                                             "ts": ts}}}))
-            msg = json.dumps({"msg": "rule '{}' state 'dispatched' recorded".
-                                     format(id_),
+            msg = json.dumps({"msg": "rule '{}' state '{}' recorded".
+                                     format(id_, action),
                               "status": "OK"})
 
         msg = json.dumps({"msg": "wrong action",
