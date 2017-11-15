@@ -120,6 +120,11 @@ class RuleEventClient(object):
         else:
             mem_reservation = int(1e9)
 
+        if "mounts" in activity:
+            mounts =  activity["mounts"]
+        else:
+            mounts = []
+
         resources = docker.types.Resources(cpu_reservation=cpu_reservation,
                                            mem_reservation=mem_reservation)
 
@@ -131,6 +136,7 @@ class RuleEventClient(object):
                                           name=name,
                                           env=env,
                                           mode="global",
+                                          mounts=mounts,
                                           networks=["cirrus"],
                                           resources=resources,
                                           restart_policy=restart_policy)
