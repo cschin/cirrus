@@ -131,11 +131,13 @@ class RuleEventClient(object):
         restart_policy = docker.types.RestartPolicy(condition="none",
                                                     max_attempts=1)
 
+        service_mode = docker.types.ServiceMode(mode="replicated", replicas=1)
+
         srv = self.docker_services.create(image,
                                           command=cmd,
                                           name=name,
                                           env=env,
-                                          mode="global",
+                                          mode=service_mode,
                                           mounts=mounts,
                                           networks=["cirrus"],
                                           resources=resources,
