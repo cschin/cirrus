@@ -99,13 +99,13 @@ class RuleEventClient(object):
     def run_docker_task(self, rule_id, activity, trigger_event_set, force):
         image = activity["image"]
         cmd = activity["cmd"]
-        name = "{}-{}-{}".format(rule_id.replace(":","-"),
-                                 str(time.time()).replace(".","-"),
-                                 random.randint(0,100))
+        name = "{}-{}-{}".format(rule_id.replace(":", "-"),
+                                 str(time.time()).replace(".", "-"),
+                                 random.randint(0, 100))
         env = ["TRIGGER={}".format(trigger_event_set),
-                "RULE_ID={}".format(rule_id),
-                "NAME={}".format(name),
-                "FORCE={}".format(force)]
+               "RULE_ID={}".format(rule_id),
+               "NAME={}".format(name),
+               "FORCE={}".format(force)]
 
         if "env" in activity:
             env.update(activity["env"])
@@ -132,6 +132,8 @@ class RuleEventClient(object):
                                                     max_attempts=1)
 
         service_mode = docker.types.ServiceMode(mode="replicated", replicas=1)
+
+        self.docker_client.containers.prune()
 
         srv = self.docker_services.create(image,
                                           command=cmd,
