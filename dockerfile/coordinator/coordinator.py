@@ -155,6 +155,7 @@ def _resource(type_, id_):
             msg = json.dumps({"msg": "rule '{}' state '{}' recorded".
                                      format(id_, action),
                               "status": "OK"})
+            return msg
 
         msg = json.dumps({"msg": "wrong action",
                           "status": "FAIL"})
