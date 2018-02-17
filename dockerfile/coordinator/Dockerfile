@@ -11,7 +11,7 @@ COPY uwsgi.ini /var/www/app/
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # install uwsgi pyzmq Flask 
-RUN pip3 install uwsgi pyzmq Flask
+RUN pip3 install uwsgi pyzmq Flask flask-cors
 
 # Setup Supervisor
 RUN mkdir -p /var/log/supervisor

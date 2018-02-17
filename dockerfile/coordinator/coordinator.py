@@ -3,6 +3,7 @@ import redis
 import time
 import zmq
 from flask import Flask
+from flask_cors import CORS
 from flask import request
 
 REDIS_HOST = "127.0.0.1"
@@ -81,6 +82,7 @@ def get_triggered_rules(triggering_event, force="false"):
 
 
 app = Flask(__name__)
+CORS(app)
 application = app
 
 
