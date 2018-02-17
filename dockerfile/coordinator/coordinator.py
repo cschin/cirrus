@@ -179,10 +179,12 @@ def _queue(type_):
                     rtn.append(json.loads(r.decode("utf-8")))
                 return json.dumps(rtn)
         else:
-            rtn = []
+            rtn = {}
             key = "{}:*".format(type_).encode("utf-8")
             for rr in r.scan_iter(match=key):
-                rtn.append(rr.decode("utf-8"))
+                payload = r.get(rr)
+                payload = json.loads(payload.decode("utf-8"))
+                rtn[rr.decode("utf-8")] = payload
             return json.dumps(rtn)
     elif request.method == "DELETE":
         if type_.split(":")[0] == "queue":
