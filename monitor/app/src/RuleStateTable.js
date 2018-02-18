@@ -30,7 +30,12 @@ class RuleStateTable extends Component {
               className="-striped -highlight" /></div>
 	   )
   }
+
   componentWillMount() {
+    this.loadData();	  
+  }
+
+  loadData() {
     var self = this;	  
     axios.get('http://'+process.env.REACT_APP_APP_BACKEND_BASEURL+'/q/queue:rule_state')
     .then(function (response) {

@@ -14,6 +14,9 @@ class EventGraph extends Component {
     };
   }
   componentWillMount() {
+      this.loadData()
+  }
+  loadData() {
     var self = this;	  
 
     axios.get('http://'+process.env.REACT_APP_APP_BACKEND_BASEURL+'/q/rule')
@@ -39,7 +42,7 @@ class EventGraph extends Component {
       self.setState({
 	  event_set: event_set_
       });
-      console.log(JSON.stringify(self.state));
+      //console.log(JSON.stringify(self.state));
     })
     .catch(function (error) {
       console.log(error);

@@ -8,8 +8,17 @@ import EventGraph from "./EventGraph.js";
 
 
 class App extends Component {
-  constructor(){
-    super();
+  constructor(props, context){
+    super(props);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.state = {
+      key: 1,
+    };
+  }
+  handleSelect(key) {
+    // alert(`selected ${key}`);
+    this.setState({ key });
+    this.refs["tab"+key].loadData();
   }
   render() {
     return (
@@ -17,18 +26,21 @@ class App extends Component {
         <PageHeader align="center">
          Cirrus Monitor <small> </small>
 	</PageHeader>
-	<Tabs defaultActiveKey={1} id="uncontrolled-tab-example" align="right">
+	<Tabs 
+	   activeKey={this.state.key}
+	   onSelect={this.handleSelect}
+	   id="monitor-tab">
 	  <Tab eventKey={1} title="Rule States">
-	      <RuleStateTable/>
+	      <RuleStateTable ref="tab1"/>
           </Tab>
 	  <Tab eventKey={2} title="Rules and Events">
-	      <RuleEventTable/>
+	      <RuleEventTable ref="tab2"/>
 	  </Tab>
 	  <Tab eventKey={3} title="Event Queue">
-	      <EventQueueTable/>
+	      <EventQueueTable ref="tab3"/>
 	  </Tab>
 	  <Tab eventKey={4} title="Event Graph">
-	      <EventGraph/>
+	      <EventGraph ref="tab4"/>
 	  </Tab>
         </Tabs>
     </div>

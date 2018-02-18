@@ -12,6 +12,7 @@ class EventQueueTable extends Component {
       rule_state: []
     };
   }
+
   render() {
     return (
           <div><ReactTable 
@@ -30,7 +31,12 @@ class EventQueueTable extends Component {
               className="-striped -highlight" /></div>
 	   )
   }
+
   componentWillMount() {
+      this.loadData();	  
+  }
+
+  loadData() {
     var self = this;	  
     axios.get('http://'+process.env.REACT_APP_APP_BACKEND_BASEURL+'/q/queue:event')
     .then(function (response) {
