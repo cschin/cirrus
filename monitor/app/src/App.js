@@ -180,6 +180,9 @@ class EventGraph extends Component {
 
   componentDidUpdate() {
         var self = this;	  
+	if (self.state.rule_state.length == 0  || Object.keys(self.state.event_set).length ==0) {
+	    return;
+	}
 	var g = new dagreD3.graphlib.Graph()
 	  .setGraph({})
 	  .setDefaultEdgeLabel(function() { return {}; });
@@ -219,9 +222,9 @@ class EventGraph extends Component {
 
 	// Center the graph
 	var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
-	svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
+	//svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
 	svg.attr("height", g.graph().height + 40);
-	svg.attr("width", g.graph().width + 40);
+	svg.attr("width", g.graph().width +  80);
   }
   render() {
 	
