@@ -184,7 +184,7 @@ def _queue(type_):
             for rr in r.scan_iter(match=key):
                 payload = r.get(rr)
                 payload = json.loads(payload.decode("utf-8"))
-                rtn[rr.decode("utf-8")] = payload
+                rtn[rr.decode("utf-8").partition(":")[-1]] = payload
             return json.dumps(rtn)
     elif request.method == "DELETE":
         if type_.split(":")[0] == "queue":
