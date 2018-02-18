@@ -5,18 +5,15 @@
   "dependencies": {
     "axios": "0.17.1",
     "bootstrap": "3.3.7",
-    "d3": "^4.13.0",
-    "dagre": "^0.8.2",
-    "dagre-d3": "^0.6.1",
+    "d3": "4.13.0",
+    "dagre": "0.8.2",
+    "dagre-d3": "0.6.1",
     "match-sorter": "2.2.0",
     "react": "^16.2.0",
     "react-bootstrap": "0.32.1",
     "react-dom": "^16.2.0",
     "react-scripts": "0.9.5",
-    "react-table": "6.7.5",
-    "dagre": "0.8.2",
-    "dagre-d3": "0.6.1",
-    "d3": "4.13.0"
+    "react-table": "6.7.5"
   },
   "devDependencies": {},
   "scripts": {
