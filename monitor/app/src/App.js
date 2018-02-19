@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { PageHeader, Tabs, Tab } from 'react-bootstrap';
+import RuleLatestStateTable from "./RuleLatestStateTable.js";
 import RuleStateTable from "./RuleStateTable.js";
 import RuleEventTable from "./RuleEventTable.js";
 import EventQueueTable from "./EventQueueTable.js";
@@ -30,17 +31,20 @@ class App extends Component {
 	   activeKey={this.state.key}
 	   onSelect={this.handleSelect}
 	   id="monitor-tab">
-	  <Tab eventKey={1} title="Rule States">
-	      <RuleStateTable ref="tab1"/>
-          </Tab>
-	  <Tab eventKey={2} title="Rules and Events">
-	      <RuleEventTable ref="tab2"/>
+	  <Tab eventKey={1} title="Rule Latest States">
+	      <RuleLatestStateTable ref="tab1"/>
 	  </Tab>
+	  <Tab eventKey={2} title="Rule States">
+	      <RuleStateTable ref="tab2"/>
+          </Tab>
 	  <Tab eventKey={3} title="Event Queue">
 	      <EventQueueTable ref="tab3"/>
 	  </Tab>
-	  <Tab eventKey={4} title="Event Graph">
-	      <EventGraph ref="tab4"/>
+	  <Tab eventKey={4} title="Rules and Events">
+	      <RuleEventTable ref="tab4"/>
+	  </Tab>
+	  <Tab eventKey={5} title="Event Graph">
+	      <EventGraph ref="tab5"/>
 	  </Tab>
         </Tabs>
     </div>
