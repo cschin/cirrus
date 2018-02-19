@@ -34,7 +34,7 @@ class App extends Component {
 	  <Tab eventKey={1} title="Rule Latest States">
 	      <RuleLatestStateTable ref="tab1"/>
 	  </Tab>
-	  <Tab eventKey={2} title="Rule States">
+	  <Tab eventKey={2} title="Rule State Log">
 	      <RuleStateTable ref="tab2"/>
           </Tab>
 	  <Tab eventKey={3} title="Event Queue">
