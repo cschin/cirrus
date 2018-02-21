@@ -25,8 +25,8 @@ class RuleEventTable extends Component {
 	                  { Header: 'Task Type', accessor: 'task_type' },
                           { Header: "Triggered By", accessor: "triggeredby"}, 
                           { Header: 'Triggering', accessor: 'triggering'} ] }
-	      defaultPageSize={32}
-	      style={{ height: "500px" }}
+	      defaultPageSize={20}
+	      style={{ height: "700px" }}
               className="-striped -highlight" /></div>
 	   )
   }

@@ -24,8 +24,8 @@ class RuleLatestStateTable extends Component {
                             filterAll: true}, 
                           { Header: "Latest State", accessor: "state" }, 
                           { Header: 'Time Stamp', accessor: 'ts',filterable: false } ] }
-	      defaultPageSize={32}
-	      style={{ height: "500px" }}
+	      defaultPageSize={20}
+	      style={{ height: "700px" }}
               className="-striped -highlight" /></div>
 	   )
   }

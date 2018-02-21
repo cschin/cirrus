@@ -24,8 +24,8 @@ class RuleStateTable extends Component {
                             filterAll: true}, 
                           { Header: "State", accessor: "state", filterable: false }, 
                           { Header: 'Time Stamp', accessor: 'ts',filterable: false } ] }
-	      defaultPageSize={32}
-	      style={{ height: "500px" }}
+	      defaultPageSize={20}
+	      style={{ height: "700px" }}
               pivotBy={["id"]}
               className="-striped -highlight" /></div>
 	   )

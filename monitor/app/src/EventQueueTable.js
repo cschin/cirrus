@@ -26,8 +26,8 @@ class EventQueueTable extends Component {
 			    filterAll: true}, 
                           { Header: 'Action', accessor: 'action'},
 	                  { Header: 'force', accessor: 'force' }] }
-	      defaultPageSize={32}
-	      style={{ height: "500px" }}
+	      defaultPageSize={20}
+	      style={{ height: "700px" }}
               className="-striped -highlight" /></div>
 	   )
   }
