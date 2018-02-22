@@ -1,7 +1,7 @@
 FROM ubuntu
 RUN apt-get update  && \
 apt-get install -y tar gzip curl jq  && \
-apt-get install -y python3 python3-pip python3-redis redis-server vim-tiny nginx supervisor uwsgi
+apt-get install -y python3 python3-pip python3-redis redis-server vim-tiny nginx supervisor uwsgi npm
 
 # Setup Nginx
 RUN rm /etc/nginx/sites-enabled/default
@@ -20,6 +20,8 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Copy Application
 COPY coordinator.py zmq_bridge.py /var/www/app/
 WORKDIR /var/www/app/
+RUN cd /root && npm install -g redis-commander
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 #CMD ["bash", "-c", "service redis-server restart && python3 zmq_bridge.py && /usr/bin/supervisord"]
 CMD ["bash", "-c", "service redis-server start && /usr/bin/supervisord"]
 #CMD ["bash", "-c", "service redis-server restart && python3 coordinator.py >& log"]
