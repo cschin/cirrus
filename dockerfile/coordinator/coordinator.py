@@ -150,7 +150,7 @@ def _resource(type_, id_):
 
             if len(msgs) == 0:
                 msgs = [{"msg": "no rule is triggered"}]
-            msg = json.dumps({"msg": msgs,
+            msg = json.dumps({"msgs": msgs,
                               "status": "OK"})
             return msg
         elif type_ == "rule" and action in ("dispatch",
@@ -164,14 +164,12 @@ def _resource(type_, id_):
             r.rpush(r_key, json.dumps({"rule": rule_id,
                                        "payload": {"state": action},
                                        "ts": ts}))
-            msg = json.dumps({"msg": "rule '{}' state '{}' recorded".
-                                     format(id_, action),
-                              "status": "OK"})
-            return msg
+            msgs = json.dumps({"msgs": [{ "msg": "rule '{}' state '{}' recorded".format(id_, action) }],
+                               "status":"OK"})
+            return msgs
 
-        msg = json.dumps({"msg": "wrong action",
-                          "status": "FAIL"})
-        return msg
+        msgs = json.dumps({"msgs": [{"msg": "wrong action" }], "status": "FAIL"})
+        return msgs
 
 
 @app.route("/q/<type_>", methods=["GET", "DELETE"])
