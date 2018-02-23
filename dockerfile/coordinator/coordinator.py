@@ -101,8 +101,8 @@ def _resource(type_, id_):
             return msg, 404
         else:
             payload = json.loads(payload.decode("utf-8"))
-            payload = payload["payload"]  # yes, I know it is ugly, fixme?
-            return json.dumps({"payload": payload, "status": "OK"})
+            payload["status"] = "OK"  # yes, I know it is ugly, fixme?
+            return json.dumps(payload)
     elif request.method == "DELETE":
         r.delete(key)
         msg = json.dumps({"msg": "{} deleted".format(key),
@@ -110,7 +110,8 @@ def _resource(type_, id_):
         return msg
     elif request.method == 'PUT':  # registering
         payload = json.loads(request.get_json())
-        r.set(key.encode("utf-8"), json.dumps({"payload": payload,
+        r.set(key.encode("utf-8"), json.dumps({type_: id_,
+                                               "payload": payload,
                                                "ts": time.time()}))
         msg = json.dumps({"msg": "set {}".format(key),
                           "status": "OK"})
@@ -121,39 +122,48 @@ def _resource(type_, id_):
         force = req.get("force", "false")
         # currently, we only allow to send single event for triggering,
         # should we allow to a set of events as a single tigger?
-        if action == "trigger" and type_ == "event":
+        if type_ == "event" and action == "trigger":
             ts = time.time()
             key = "queue:{}".format(type_).encode("utf-8")
-            msg = json.dumps({"payload": {id_: req}, "ts": ts})
+            msg = json.dumps({"event": id_,
+                              "payload": req,
+                              "ts": ts})
             r.rpush(key, msg)
             triggered_rules = get_triggered_rules(id_, force=force)
             msgs = []
             for rule in triggered_rules:
                 rule_id = list(rule.keys())[0]
 
-                r_key = "queue:rule_state".encode("utf-8")
-                r.rpush(r_key, json.dumps({"payload": {
-                                              rule_id: {
-                                                "state": "triggered",
-                                                "ts": ts}}}))
-
                 is_msg_sent = send_message(json.dumps({"rule": rule,
                                                        "force": force}))
+
                 sent_status = "OK" if is_msg_sent else "FAIL"
+
+                r_key = "queue:rule_state".encode("utf-8")
+                r.rpush(r_key, json.dumps({"rule": rule_id,
+                                           "payload": {"state": "triggered"},
+                                           "ts": ts}))
+
                 msgs.append({"msg": "rule '{}' trigged by '{}'".
                                     format(rule_id, id_),
                              "zmq_push_status": sent_status})
+
+            if len(msgs) == 0:
+                msgs = [{"msg": "no rule is triggered"}]
             msg = json.dumps({"msg": msgs,
                               "status": "OK"})
             return msg
-        elif action in ("dispatch", "start", "end") and type_ == "rule":
+        elif type_ == "rule" and action in ("dispatch",
+                                            "start",
+                                            "fail",
+                                            "success",
+                                            "end"):
             rule_id = id_
             ts = time.time()
             r_key = "queue:rule_state".format(type_).encode("utf-8")
-            r.rpush(r_key, json.dumps({"payload": {
-                                          rule_id: {
-                                            "state": action,
-                                            "ts": ts}}}))
+            r.rpush(r_key, json.dumps({"rule": rule_id,
+                                       "payload": {"state": action},
+                                       "ts": ts}))
             msg = json.dumps({"msg": "rule '{}' state '{}' recorded".
                                      format(id_, action),
                               "status": "OK"})
@@ -179,12 +189,12 @@ def _queue(type_):
                     rtn.append(json.loads(r.decode("utf-8")))
                 return json.dumps(rtn)
         else:
-            rtn = {}
+            rtn = []
             key = "{}:*".format(type_).encode("utf-8")
             for rr in r.scan_iter(match=key):
                 payload = r.get(rr)
                 payload = json.loads(payload.decode("utf-8"))
-                rtn[rr.decode("utf-8").partition(":")[-1]] = payload
+                rtn.append(payload)
             return json.dumps(rtn)
     elif request.method == "DELETE":
         if type_.split(":")[0] == "queue":
@@ -194,5 +204,5 @@ def _queue(type_):
 
 
 if __name__ == '__main__':
-    #app.run(host='0.0.0.0', port=7000, debug=False)
+    # app.run(host='0.0.0.0', port=7000, debug=False)
     application.run()

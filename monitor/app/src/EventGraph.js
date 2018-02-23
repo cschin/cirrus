@@ -9,7 +9,7 @@ class EventGraph extends Component {
   constructor(){
     super();
     this.state = {
-      rule_state: [],
+      rule: [],
       event_set: {}
     };
   }
@@ -22,11 +22,11 @@ class EventGraph extends Component {
     axios.get('http://'+process.env.REACT_APP_APP_BACKEND_BASEURL+'/q/rule')
     .then(function (response) {
       self.setState({
-        rule_state: Array.from( Object.keys(response.data), 
-				    x => ({ "id": x,
-		                            "triggeredby": Object.keys(response.data[x]["payload"])[0],
-                                            "triggering": Object.values(response.data[x]["payload"])[0]["triggering"],
-				            "task_type": Object.values(response.data[x]["payload"])[0]["activity"]["task_type"] }) )
+        rule: Array.from( response.data, 
+                          x => ({ "id": x["rule"],
+		                  "triggeredby": Object.keys(x["payload"])[0],
+                                  "triggering": Object.values(x["payload"])[0]["triggering"],
+                                  "task_type": Object.values(x["payload"])[0]["activity"]["task_type"] }) )
       });
     })
     .catch(function (error) {
@@ -37,7 +37,7 @@ class EventGraph extends Component {
     .then(function (response) {
       var event_set_ = {};
       for (var es in response.data) {
-	  event_set_[es] = response.data[es]["payload"];
+	  event_set_[response.data[es]["event_set"]] = response.data[es]["payload"];
       }
       self.setState({
 	  event_set: event_set_
@@ -52,7 +52,7 @@ class EventGraph extends Component {
 
   componentDidUpdate() {
         var self = this;	  
-	if (self.state.rule_state.length === 0  || Object.keys(self.state.event_set).length === 0) {
+	if (self.state.rule.length === 0  || Object.keys(self.state.event_set).length === 0) {
 	    return;
 	}
 	var g = new dagreD3.graphlib.Graph()
@@ -70,7 +70,7 @@ class EventGraph extends Component {
 	});
 
 	// Set up edges, no special attributes.
-	this.state.rule_state.forEach( function(v) { 
+	this.state.rule.forEach( function(v) { 
 	    var a = self.state.event_set[v["triggeredby"]];
 	    var b = self.state.event_set[v["triggering"]];
 	    for ( var i = 0; i < a.length; i++ ) {
@@ -93,15 +93,15 @@ class EventGraph extends Component {
 	render(d3.select("svg g"), g);
 
 	// Center the graph
+	svg.attr("width", g.graph().width + 80);
+	svg.attr("height", g.graph().height + 80);
 	var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
-	//svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
-	svg.attr("height", g.graph().height + 40);
-	svg.attr("width", g.graph().width +  80);
+	svgGroup.attr("transform", "translate(" + xCenterOffset + ", 40)");
   }
   render() {
 	
     return (
-        <div> <br/><svg></svg> </div>
+        <div> <span height={100} float={"right"}/> <svg> </svg> </div>
 	   )
   }
 }

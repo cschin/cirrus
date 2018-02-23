@@ -9,7 +9,7 @@ class RuleEventTable extends Component {
   constructor(){
     super();
     this.state = {
-      rule_state: []
+      rule: []
     };
   }
   render() {
@@ -18,7 +18,7 @@ class RuleEventTable extends Component {
 	      filterable
 	      defaultFilterMethod={(filter, row) =>
 		      row[filter.id].startsWith(filter.value) }
-	      data={this.state.rule_state} 
+	      data={this.state.rule} 
 	      columns={ [ { Header: 'Rule ID', accessor: 'id', 
                             filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["id"] }), 
                             filterAll: true}, 
@@ -38,11 +38,11 @@ class RuleEventTable extends Component {
     axios.get('http://'+process.env.REACT_APP_APP_BACKEND_BASEURL+'/q/rule')
     .then(function (response) {
       self.setState({
-        rule_state: Array.from( Object.keys(response.data), 
-				    x => ({ "id": x,
-		                            "triggeredby": Object.keys(response.data[x]["payload"])[0],
-                                            "triggering": Object.values(response.data[x]["payload"])[0]["triggering"],
-				            "task_type": Object.values(response.data[x]["payload"])[0]["activity"]["task_type"] }) )
+        rule: Array.from( response.data, 
+                          x => ({ "id": x["rule"],
+		                  "triggeredby": Object.keys(x["payload"])[0],
+                                  "triggering": Object.values(x["payload"])[0]["triggering"],
+                                  "task_type": Object.values(x["payload"])[0]["activity"]["task_type"] }) )
       });
     })
     .catch(function (error) {

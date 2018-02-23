@@ -41,10 +41,10 @@ class EventQueueTable extends Component {
     axios.get('http://'+process.env.REACT_APP_APP_BACKEND_BASEURL+'/q/queue:event')
     .then(function (response) {
       self.setState({
-        rule_state: Array.from( response.data, x => ({ "id": Object.keys(x["payload"])[0],
+        rule_state: Array.from( response.data, x => ({ "id": x["event"],
                                                        "ts": new Date(x["ts"] * 1000).toLocaleString(),
-                                                       "action": Object.values(x["payload"])[0]["action"],
-                                                       "force": Object.values(x["payload"])[0]["force"]}) )
+                                                       "action": x["payload"]["action"],
+                                                       "force": x["payload"]["force"]}) )
       });
     })
     .catch(function (error) {

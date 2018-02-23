@@ -40,16 +40,13 @@ class RuleLatestStateTable extends Component {
     .then(function (response) {
       let last_state = {};
       response.data.forEach( function(x) { 
-	                         let v = x["payload"]; 
-			         last_state[Object.keys(v)[0]] = [] } );
+			         last_state[x["rule"]] = [] } );
       response.data.forEach( function(x) {
-	                          let v = x["payload"]; 
-			          last_state[Object.keys(v)[0]].push( [ Object.values(v)[0]["ts"], 
-			                                                Object.values(v)[0]["state"],
-			                                                Object.keys(v)[0] ] ) } );
+			         last_state[x["rule"]].push( [ x["ts"], 
+			                                       x["payload"]["state"],
+			                                       x["rule"] ] ) } );
       response.data.forEach( function(x) { 
-	                          let v = x["payload"]; 
-		                  last_state[Object.keys(v)[0]].sort(function(a, b){return b[0]-a[0]});} );
+		                 last_state[x["rule"]].sort(function(a, b){return b[0]-a[0]});} );
       self.setState({
         rule_state: Array.from( Object.values(last_state), x => ({ "id": x[0][2],
                                                                    "ts": new Date(x[0][0] * 1000).toLocaleString(),

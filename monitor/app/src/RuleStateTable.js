@@ -40,9 +40,9 @@ class RuleStateTable extends Component {
     axios.get('http://'+process.env.REACT_APP_APP_BACKEND_BASEURL+'/q/queue:rule_state')
     .then(function (response) {
       self.setState({
-        rule_state: Array.from( response.data, x => ({ "id": Object.keys(x["payload"])[0],
-                                                       "ts": new Date(Object.values(x["payload"])[0]["ts"] * 1000).toLocaleString(),
-                                                       "state": Object.values(x["payload"])[0]["state"]	}) )
+        rule_state: Array.from( response.data, x => ({ "id": x["rule"],
+                                                       "ts": new Date(x["ts"] * 1000).toLocaleString(),
+                                                       "state": x["payload"]["state"]}) )
       });
     })
     .catch(function (error) {
