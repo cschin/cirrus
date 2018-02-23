@@ -47,7 +47,7 @@ def get_triggered_rules(triggering_event, force="false"):
 
     for e in event_queue[:-1]:
         e = json.loads(e.decode("utf-8"))
-        events_in_queue.update(e["payload"].keys())
+        events_in_queue.add(e["event"])
 
     # if `force` is False, we won't trigger rules if an event have
     # already happend before
