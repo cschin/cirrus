@@ -12,7 +12,7 @@ docker build -t monitor monitor/
 
 docker swarm init
 docker network create --subnet 10.0.0.0/16 --driver overlay cirrus 
-# port 7000 us used as HTTP server and 8081 is for ZeroMQ
+# port 7000 us used as HTTP server and 8081 is for redis-commander
 docker service create --hostname coordinator --name coordinator --network cirrus --publish 7000:80 --publish 8081:8081 -d coordinator 
 sleep 1
 # there can be multiple dispatchers if one likes
